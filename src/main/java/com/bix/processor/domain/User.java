@@ -7,6 +7,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.time.Instant;
+
 @Entity
 @Getter
 @Setter
@@ -16,6 +18,8 @@ public class User extends CoreEntity {
     private String name;
     private String email;
     private String passwordHash;
+    private Instant lastImageProcessed;
+    private int processCount = 0;
 
     private SubscriptionPlan subscriptionPlan;
 

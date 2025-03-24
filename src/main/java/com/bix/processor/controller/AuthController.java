@@ -3,12 +3,12 @@ package com.bix.processor.controller;
 import com.bix.processor.controller.domain.UserRequest;
 import com.bix.processor.domain.User;
 import com.bix.processor.exception.BadRequestException;
-import com.bix.processor.repository.UserRepository;
 import com.bix.processor.security.JwtAuthenticationResponse;
 import com.bix.processor.security.JwtUtil;
 import com.bix.processor.security.UserPrincipal;
 import com.bix.processor.security.domain.LoginRequest;
 import com.bix.processor.service.AuthService;
+import com.bix.processor.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -17,7 +17,6 @@ import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -31,7 +30,7 @@ public class AuthController {
 
     private final AuthenticationProvider authenticationProvider;
     private final AuthService authService;
-    private final UserRepository userRepository;
+    private final UserService userService;
     private final JwtUtil jwtUtil;
 
     @PostMapping("/signup")
@@ -58,8 +57,7 @@ public class AuthController {
             SecurityContextHolder.getContext().setAuthentication(authentication);
 
             UserPrincipal userPrincipal = (UserPrincipal) authentication.getPrincipal();
-            User user = userRepository.findByName(userPrincipal.getUsername())
-                    .orElseThrow(() -> new UsernameNotFoundException("User not found"));
+            User user = userService.findByName(userPrincipal.getUsername());
             String jwt = jwtUtil.generateToken(user.getName(), user.getSubscriptionPlan().name());
 
             return new JwtAuthenticationResponse(jwt, user);
