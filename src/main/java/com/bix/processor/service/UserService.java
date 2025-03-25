@@ -3,6 +3,7 @@ package com.bix.processor.service;
 import com.bix.processor.domain.Image;
 import com.bix.processor.domain.SubscriptionPlan;
 import com.bix.processor.domain.User;
+import com.bix.processor.exception.ForbiddenException;
 import com.bix.processor.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
@@ -31,8 +32,7 @@ public class UserService {
 
     public void validateUserForProcessing(User user, Image image) {
         if (!image.getUser().getId().equals(user.getId())) {
-            return ResponseEntity.status(HttpStatus.FORBIDDEN)
-                    .body("You don't have permission to process this image");
+            throw new ForbiddenException("You don't have permission to process this image");
         }
 
         // Verify user's subscription plan allows these operations
@@ -40,8 +40,7 @@ public class UserService {
             if (user.getLastImageProcessed().truncatedTo(ChronoUnit.DAYS)
                     .equals(Instant.now().truncatedTo(ChronoUnit.DAYS))) {
                 if (user.getProcessCount() >= quotaDailyImages) {
-                    return ResponseEntity.status(HttpStatus.FORBIDDEN)
-                            .body("Your subscription plan doesn't support these operations");
+                    throw new ForbiddenException("Your subscription plan doesn't support these operations");
                 }
             }
         }

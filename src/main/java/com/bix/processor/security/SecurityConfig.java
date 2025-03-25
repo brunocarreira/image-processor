@@ -80,7 +80,7 @@ public class SecurityConfig {
         public boolean matches(HttpServletRequest request) {
             String uri = request.getRequestURI();
             String[] exclusions = {
-                    "/rest/auth", "/rest/public", "/error", "/actuator", "/favicon.ico"
+                    "/api/auth", "/api/public", "/error", "/actuator", "/favicon.ico"
             };
 
             return Stream.of(exclusions).noneMatch(uri::startsWith);

@@ -1,0 +1,14 @@
+spring:
+  datasource:
+    url: jdbc:h2:mem:testdb
+    driverClassName: org.h2.Driver
+    username: imageprocessor
+    password: password
+  jpa:
+    database-platform: org.hibernate.dialect.H2Dialect
+    hibernate:
+      ddl-auto: create-drop
+    show-sql: true  # Optional: show SQL statements
+    properties:
+      hibernate:
+        format_sql: true

@@ -3,6 +3,8 @@ package com.bix.processor.domain;
 
 import com.bix.processor.controller.domain.UserRequest;
 import jakarta.persistence.Entity;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -12,7 +14,7 @@ import java.time.Instant;
 @Entity
 @Getter
 @Setter
-@NoArgsConstructor
+@AllArgsConstructor
 public class User extends CoreEntity {
 
     private String name;

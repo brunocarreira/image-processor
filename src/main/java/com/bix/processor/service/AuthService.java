@@ -1,6 +1,7 @@
 package com.bix.processor.service;
 
 import com.bix.processor.controller.domain.UserRequest;
+import com.bix.processor.domain.SubscriptionPlan;
 import com.bix.processor.domain.User;
 import com.bix.processor.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -21,6 +22,7 @@ public class AuthService {
         User user = new User(userRequest);
         String passwordHash = passwordEncoder.encode(userRequest.getPassword());
         user.setPasswordHash(passwordHash);
+        user.setSubscriptionPlan(userRequest.getSubscriptionPlan() == null ? SubscriptionPlan.FREE : userRequest.getSubscriptionPlan());
         User created = userRepository.save(user);
         emailService.sendEmail(user.getEmail(), "Welcome!", "Thank you for registering!");
         return created;

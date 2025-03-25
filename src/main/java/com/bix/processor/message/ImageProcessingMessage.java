@@ -1,5 +1,6 @@
 package com.bix.processor.message;
 
+import com.bix.processor.domain.ProcessOperation;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -10,5 +11,5 @@ import java.util.List;
 public class ImageProcessingMessage {
     private Long imageId;
     private Long userId;
-    private List<String> operations;
+    private List<ProcessOperation> operations;
 }

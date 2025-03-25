@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 @Slf4j
 public class GlobalExceptionHandler {
 
-    @ExceptionHandler(BadRequestException.class)
+    @ExceptionHandler({BadRequestException.class, RuntimeException.class})
     @ResponseBody
     ErrorDetails onBadRequestException(BadRequestException e, HttpServletResponse response) {
         response.setStatus(e.getStatus());

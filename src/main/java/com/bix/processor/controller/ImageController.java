@@ -2,25 +2,30 @@ package com.bix.processor.controller;
 
 import com.bix.processor.controller.domain.ProcessImageRequest;
 import com.bix.processor.domain.Image;
-import com.bix.processor.domain.SubscriptionPlan;
 import com.bix.processor.domain.User;
-import com.bix.processor.exception.ResourceNotFoundException;
-import com.bix.processor.repository.ImageRepository;
-import com.bix.processor.service.ImageProcessorService;
+import com.bix.processor.service.ImageService;
 import com.bix.processor.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpStatus;
+import org.springframework.core.io.Resource;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Objects;
 
 @RestController
 @RequestMapping("/api/images")
@@ -28,8 +33,7 @@ import org.springframework.web.bind.annotation.RestController;
 @Slf4j
 public class ImageController {
 
-    private final ImageProcessorService imageProcessorService;
-    private final ImageRepository imageRepository;
+    private final ImageService imageService;
     private final UserService userService;
 
     @PostMapping("/{imageId}/process")
@@ -40,32 +44,42 @@ public class ImageController {
             @AuthenticationPrincipal UserDetails userDetails) {
 
         // Verify image belongs to user
-        Image image = imageRepository.findById(imageId)
-                .orElseThrow(() -> new ResourceNotFoundException("Image not found"));
-
+        Image image = imageService.findById(imageId);
 
         User user = userService.findByName(userDetails.getUsername());
-        validateUserForProcessing(user, image);
+        userService.validateUserForProcessing(user, image);
+        imageService.processImage(imageId, user.getId(), request.getOperations());
 
-        if (!image.getUser().getId().equals(user.getId())) {
-            return ResponseEntity.status(HttpStatus.FORBIDDEN)
-                    .body("You don't have permission to process this image");
-        }
-
-        // Verify user's subscription plan allows these operations
-        if (user.getSubscriptionPlan() != SubscriptionPlan.PREMIUM) {
-
-            return ResponseEntity.status(HttpStatus.FORBIDDEN)
-                    .body("Your subscription plan doesn't support these operations");
-        }
-
-        imageProcessorService.processImage();
-
-//        Map<String, Object> response = new HashMap<>();
-//        response.put("jobId", jobId);
-//        response.put("message", "Image processing job submitted successfully");
+        Map<String, Object> response = new HashMap<>();
+        response.put("message", "Image processing job submitted successfully");
 
         return ResponseEntity.ok(response);
     }
 
+    @PostMapping("/upload")
+    @PreAuthorize("isAuthenticated()")
+    public ResponseEntity<?> uploadImage(@RequestParam("file") MultipartFile file,
+                                         @AuthenticationPrincipal UserDetails userDetails) {
+        Long imageId = imageService.createImage(file);
+
+        Map<String, Object> response = new HashMap<>();
+        response.put("success", true);
+        response.put("imageId", imageId);
+
+        return ResponseEntity.ok(response);
+    }
+
+    @GetMapping("/download/{imageId}")
+    @PreAuthorize("isAuthenticated()")
+    public ResponseEntity<Resource> downloadImage(@PathVariable Long imageId) {
+        Resource resource = imageService.downloadImage(imageId);
+
+        String contentType = imageService.determineContentType(Objects.requireNonNull(resource.getFilename()));
+
+        return ResponseEntity.ok()
+                .contentType(MediaType.parseMediaType(contentType))
+                .header(HttpHeaders.CONTENT_DISPOSITION,
+                        "attachment; filename=\"" + resource.getFilename() + "\"")
+                .body(resource);
+    }
 }

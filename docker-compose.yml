@@ -1,0 +1,29 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:15-alpine
+    environment:
+      POSTGRES_DB: imageprocessordb
+      POSTGRES_USER: imageprocessor
+      POSTGRES_PASSWORD: password
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+
+  app:
+    build:
+      context: .
+      dockerfile: src/main/docker/Dockerfile
+    ports:
+      - "8080:8080"
+    depends_on:
+      - postgres
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres:5432/imageprocessordb
+      - SPRING_DATASOURCE_USERNAME=imageprocessor
+      - SPRING_DATASOURCE_PASSWORD=password
+
+volumes:
+  postgres-data:

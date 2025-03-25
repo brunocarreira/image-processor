@@ -23,7 +23,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping(path = "/auth", produces = "application/json; charset=utf-8")
+@RequestMapping(path = "/api/auth", produces = "application/json; charset=utf-8")
 @RequiredArgsConstructor
 @Slf4j
 public class AuthController {
