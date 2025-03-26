@@ -2,7 +2,7 @@ version: '3.8'
 
 services:
   postgres:
-    image: postgres:15-alpine
+    image: postgres:15.12
     environment:
       POSTGRES_DB: imageprocessordb
       POSTGRES_USER: imageprocessor
@@ -12,6 +12,17 @@ services:
     volumes:
       - postgres-data:/var/lib/postgresql/data
 
+  rabbitmq:
+    image: rabbitmq:3-management
+    ports:
+      - "5672:5672"     # AMQP port
+      - "15672:15672"   # Management UI port
+    environment:
+      RABBITMQ_DEFAULT_USER: imageprocessor
+      RABBITMQ_DEFAULT_PASS: password
+    volumes:
+      - rabbitmq-data:/var/lib/rabbitmq
+
   app:
     build:
       context: .
@@ -20,10 +31,17 @@ services:
       - "8080:8080"
     depends_on:
       - postgres
+      - rabbitmq
     environment:
+      - SPRING_PROFILES_ACTIVE=dev
       - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres:5432/imageprocessordb
       - SPRING_DATASOURCE_USERNAME=imageprocessor
       - SPRING_DATASOURCE_PASSWORD=password
+      - SPRING_RABBITMQ_HOST=rabbitmq
+      - SPRING_RABBITMQ_PORT=5672
+      - SPRING_RABBITMQ_USERNAME=imageprocessor
+      - SPRING_RABBITMQ_PASSWORD=password
 
 volumes:
   postgres-data:
+  rabbitmq-data:

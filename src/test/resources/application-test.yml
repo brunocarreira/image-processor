@@ -1,14 +1,24 @@
 spring:
   datasource:
-    url: jdbc:h2:mem:testdb
+    url: jdbc:h2:mem:testdb;MODE=PostgreSQL;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE
     driverClassName: org.h2.Driver
     username: imageprocessor
     password: password
   jpa:
-    database-platform: org.hibernate.dialect.H2Dialect
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
     hibernate:
-      ddl-auto: create-drop
+      ddl-auto: none
     show-sql: true  # Optional: show SQL statements
     properties:
       hibernate:
         format_sql: true
+#  autoconfigure:
+#    exclude:
+#      - org.springframework.boot.autoconfigure.amqp.RabbitAutoConfiguration
+  flyway:
+    locations: classpath:db/migration/h2
+    baseline-on-migrate: true
+    validate-on-migrate: true
+app:
+  events:
+    publish: false

@@ -139,10 +139,10 @@ public class ImageService {
 
             for (ProcessOperation operation : message.getOperations()) {
                 switch (operation) {
-                    case ProcessOperation.GRAYSCALE:
+                    case GRAYSCALE:
                         applyGrayscaleFilter(originalImage);
                         break;
-                    case ProcessOperation.RESIZE:
+                    case RESIZE:
                         resizeImage(originalImage);
                         break;
                     // Other operations
