@@ -5,9 +5,9 @@ spring:
     username: imageprocessor
     password: password
   jpa:
-    database-platform: org.hibernate.dialect.PostgreSQLDialect
+#    database-platform: org.hibernate.dialect.PostgreSQLDialect
     hibernate:
-      ddl-auto: none
+      ddl-auto: validate
     show-sql: true  # Optional: show SQL statements
     properties:
       hibernate:
@@ -16,9 +16,10 @@ spring:
 #    exclude:
 #      - org.springframework.boot.autoconfigure.amqp.RabbitAutoConfiguration
   flyway:
-    locations: classpath:db/migration/h2
+    locations: classpath:db/migration
     baseline-on-migrate: true
     validate-on-migrate: true
+    enabled: true
 app:
   events:
     publish: false

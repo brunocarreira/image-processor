@@ -4,7 +4,7 @@ spring:
 
 app:
   jwt:
-    secret: secret
+    secret: yourverylongandsecuresecretkeyherewithlotsofentropy
     expiration: 36000000
   quota:
     daily-images: 50
@@ -19,3 +19,9 @@ rabbitmq:
     name: imageExchange
   routing:
     key: image.processing.*
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,mappings

@@ -5,6 +5,9 @@ import com.bix.processor.domain.Image;
 import com.bix.processor.domain.User;
 import com.bix.processor.service.ImageService;
 import com.bix.processor.service.UserService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.io.Resource;
@@ -29,6 +32,7 @@ import java.util.Objects;
 
 @RestController
 @RequestMapping("/api/images")
+//@Tag(name = "Image Controller", description = "Image operations")
 @RequiredArgsConstructor
 @Slf4j
 public class ImageController {
@@ -38,6 +42,11 @@ public class ImageController {
 
     @PostMapping("/{imageId}/process")
     @PreAuthorize("isAuthenticated()")
+//    @Operation(
+//            summary = "Process Image",
+//            description = "Process image",
+//            security = @SecurityRequirement(name = "bearerAuth")
+//    )
     public ResponseEntity<?> processImage(
             @PathVariable Long imageId,
             @RequestBody ProcessImageRequest request,
@@ -58,6 +67,11 @@ public class ImageController {
 
     @PostMapping("/upload")
     @PreAuthorize("isAuthenticated()")
+//    @Operation(
+//            summary = "Upload Image",
+//            description = "Upload image",
+//            security = @SecurityRequirement(name = "bearerAuth")
+//    )
     public ResponseEntity<?> uploadImage(@RequestParam("file") MultipartFile file,
                                          @AuthenticationPrincipal UserDetails userDetails) {
         Long imageId = imageService.createImage(file);
@@ -71,6 +85,11 @@ public class ImageController {
 
     @GetMapping("/download/{imageId}")
     @PreAuthorize("isAuthenticated()")
+//    @Operation(
+//            summary = "Download Image",
+//            description = "Download image",
+//            security = @SecurityRequirement(name = "bearerAuth")
+//    )
     public ResponseEntity<Resource> downloadImage(@PathVariable Long imageId) {
         Resource resource = imageService.downloadImage(imageId);
 

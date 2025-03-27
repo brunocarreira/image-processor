@@ -27,7 +27,12 @@ public class UserService {
 
     public User findByName(String username) {
         return userRepository.findByName(username)
-                .orElseThrow(() -> new UsernameNotFoundException("User not found"));
+                .orElseThrow(() -> new UsernameNotFoundException("User with username informed not found"));
+    }
+
+    public User findByEmail(String email) {
+        return userRepository.findByEmail(email)
+                .orElseThrow(() -> new UsernameNotFoundException("User with email informed not found"));
     }
 
     public void validateUserForProcessing(User user, Image image) {

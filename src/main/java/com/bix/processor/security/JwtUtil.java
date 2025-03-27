@@ -68,6 +68,8 @@ public class JwtUtil {
     }
 
     private SecretKey getSignInKey() {
+//        return Jwts.SIG.HS256.key()
+//                .build(jwtSecret.getBytes(StandardCharsets.UTF_8));
         byte[] keyBytes = Decoders.BASE64.decode(jwtSecret);
         return Keys.hmacShaKeyFor(keyBytes);
     }

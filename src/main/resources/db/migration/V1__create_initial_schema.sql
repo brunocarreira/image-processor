@@ -1,4 +1,4 @@
-CREATE TABLE "TB_USER" (
+CREATE TABLE tb_user (
     id BIGSERIAL PRIMARY KEY,
     name VARCHAR(255) NOT NULL,
     email VARCHAR(255) NOT NULL,
@@ -8,11 +8,11 @@ CREATE TABLE "TB_USER" (
     subscription_plan VARCHAR(50) NOT NULL
 );
 
-CREATE TABLE "TB_IMAGE" (
+CREATE TABLE tb_image (
     id BIGSERIAL PRIMARY KEY,
     file_name VARCHAR(255) NOT NULL,
     file_path VARCHAR(255) NOT NULL,
     status VARCHAR(50) NOT NULL,
     user_id BIGINT NOT NULL,
-    CONSTRAINT fk_user FOREIGN KEY (user_id) REFERENCES "TB_USER" (id)
+    CONSTRAINT fk_user FOREIGN KEY (user_id) REFERENCES tb_user (id)
 );

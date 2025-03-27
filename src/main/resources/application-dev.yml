@@ -25,11 +25,38 @@ spring:
     username: imageprocessor
     password: password
     virtual-host: /
+#  mail:
+#    disabled: true
+#    test-connection: false
+#    host:
+#    port:
+#    username:
+#    password:
+#    properties:
+#      mail:
+#        smtp:
+#          connectiontimeout: 1
+#          timeout: 1
+
 server:
   port: 8080
+  servlet:
+    context-path: /processor
 
 logging:
   level:
     org:
+      springdoc: DEBUG
       hibernate:
         SQL: DEBUG
+      springframework:
+        web: DEBUG
+        mail: DEBUG
+        javamail: TRACE
+
+springdoc:
+  swagger-ui:
+    enabled: true
+#    path: /swagger-ui.html
+#  api-docs:
+#    path: /v3/api-docs

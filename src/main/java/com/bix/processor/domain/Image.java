@@ -13,7 +13,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Entity
-@Table(name = "TB_IMAGE")
+@Table(name = "tb_image")
 @Getter
 @Setter
 @NoArgsConstructor
