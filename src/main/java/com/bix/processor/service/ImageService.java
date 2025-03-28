@@ -69,7 +69,7 @@ public class ImageService {
     }
 
     @Transactional
-    public Long createImage(MultipartFile file) {
+    public Long createImage(MultipartFile file, User user) {
         try {
             String originalFileName = StringUtils.cleanPath(Objects.requireNonNull(file.getOriginalFilename()));
             Path targetLocation = this.fileStorageLocation.resolve(originalFileName);
@@ -79,6 +79,7 @@ public class ImageService {
                     .filePath(uploadDir + "/" + originalFileName)
                     .fileName(originalFileName)
                     .status(ImageStatus.PENDING)
+                    .user(user)
                     .build();
 
             return imageRepository.save(newImage).getId();
@@ -156,7 +157,8 @@ public class ImageService {
 
             User user = originalImage.getUser();
 
-            if (user.getLastImageProcessed().truncatedTo(ChronoUnit.DAYS)
+            if (user.getLastImageProcessed() != null &&
+                    user.getLastImageProcessed().truncatedTo(ChronoUnit.DAYS)
                     .equals(Instant.now().truncatedTo(ChronoUnit.DAYS))) {
                 user.setProcessCount(user.getProcessCount() + 1);
             } else {

@@ -7,7 +7,7 @@ app:
     secret: yourverylongandsecuresecretkeyherewithlotsofentropy
     expiration: 36000000
   quota:
-    daily-images: 50
+    daily-images: 2
 
 file:
   upload-dir: /home/bruno/image-processor/uploads

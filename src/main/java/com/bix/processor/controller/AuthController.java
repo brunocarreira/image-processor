@@ -23,7 +23,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping(path = "/api/auth", produces = "application/json; charset=utf-8")
+@RequestMapping(path = "/api/auth")
 public class AuthController {
 
     private static final Logger log = org.slf4j.LoggerFactory.getLogger(AuthController.class);
@@ -46,7 +46,7 @@ public class AuthController {
         return "User " + created.getName() + " registered successfully";
     }
 
-    @PostMapping("/login")
+    @PostMapping(value = "/login", produces = "application/json; charset=utf-8")
     public JwtAuthenticationResponse login(@RequestBody LoginRequest loginRequest) {
         // Validate user credentials
         Authentication authentication = authenticationProvider.authenticate(
